@@ -1,4 +1,4 @@
-public class Dato{
+public class Dato {
     private String STATION;
     private String NAME;
     private String DATE;

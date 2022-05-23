@@ -12,19 +12,22 @@ public class MarcoDeDatos {
         try{
             lector= new Scanner(archivo);
             lector.nextLine();
-            String linea="";
+            String linea;
             while(lector.hasNextLine()){
                 linea = lector.nextLine();
                 Dato d = new Dato(linea);
                 Datos.add(d);
-                System.out.println(d.toString());
             }
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
     }
 
-    public String temperaturaMaxima(){
+    public ArrayList<Dato> getDatos() {
+        return Datos;
+    }
+
+    public String temperaturaMaximaMaxima(){
         Dato max = Datos.get(0);
         for(int i =0;i<Datos.size();i++) {
             if (Datos.get(i).getTMAX() != 0) {
@@ -35,7 +38,29 @@ public class MarcoDeDatos {
         return max.toString();
     }
 
-    public String temperaturaMinima(){
+    public String temperaturaMaxima(){
+        Dato max = Datos.get(0);
+        for(int i =0;i<Datos.size();i++) {
+            if (Datos.get(i).getTAVG() != 0) {
+                if (Datos.get(i).getTAVG() > max.getTAVG())
+                    max = Datos.get(i);
+            }
+        }
+        return max.toString();
+    }
+
+    public String temperaturaMinimaMaxima(){
+        Dato max = Datos.get(0);
+        for(int i =0;i<Datos.size();i++) {
+            if (Datos.get(i).getTMIN() != 0) {
+                if (Datos.get(i).getTMIN() > max.getTMIN())
+                    max = Datos.get(i);
+            }
+        }
+        return max.toString();
+    }
+
+    public String temperaturaMinimaMinima(){
         Dato min = Datos.get(0);
         for(int i =1;i<Datos.size();i++) {
             if (Datos.get(i).getTMIN() != 0) {
@@ -46,11 +71,33 @@ public class MarcoDeDatos {
         return min.toString();
     }
 
+    public String temperaturaMinima(){
+        Dato min = Datos.get(0);
+        for(int i =1;i<Datos.size();i++) {
+            if (Datos.get(i).getTAVG() != 0) {
+                if (Datos.get(i).getTAVG() < min.getTAVG())
+                    min = Datos.get(i);
+            }
+        }
+        return min.toString();
+    }
+
+    public String temperaturaMaximaMinima(){
+        Dato min = Datos.get(0);
+        for(int i =1;i<Datos.size();i++) {
+            if (Datos.get(i).getTMAX() != 0) {
+                if (Datos.get(i).getTMAX() < min.getTMAX())
+                    min = Datos.get(i);
+            }
+        }
+        return min.toString();
+    }
+
     public String precipitacionMinima(){
         Dato min = Datos.get(0);
         for(int i =1;i<Datos.size();i++){
-            if(Datos.get(i).getTMIN()!=0) {
-                if (Datos.get(i).getTMIN() < min.getTMIN())
+            if(Datos.get(i).getPRCP()!=0) {
+                if (Datos.get(i).getPRCP() < min.getPRCP())
                     min = Datos.get(i);
             }
         }
@@ -60,8 +107,8 @@ public class MarcoDeDatos {
     public String precipitacionMaxima(){
         Dato max = Datos.get(0);
         for(int i =0;i<Datos.size();i++) {
-            if (Datos.get(i).getTMAX() != 0) {
-                if (Datos.get(i).getTMAX() > max.getTMAX())
+            if (Datos.get(i).getPRCP() != 0) {
+                if (Datos.get(i).getPRCP() > max.getPRCP())
                     max = Datos.get(i);
             }
         }
@@ -91,25 +138,28 @@ public class MarcoDeDatos {
     }
 
     public double temperaturaMinimaPromedio(){
-        int prom= 0;
+        int prom=0,cont=0;
         for(int i =0;i<Datos.size();i++){
+            if(Datos.get(i).getTMIN()==0)
+                cont++;
             prom+=Datos.get(i).getTMIN();
         }
-        return prom/Datos.size();
+        return prom/(Datos.size()-cont);
     }
 
     public double precipitacionPromedio(){
-        int prom= 0;
+        int prom=0,cont=0;
         for(int i =0;i<Datos.size();i++){
+            if(Datos.get(i).getPRCP()==0)
+                cont++;
             prom+=Datos.get(i).getPRCP();
         }
-        return prom/Datos.size();
+        return prom/(Datos.size()-cont);
     }
 
     public double desviacionEstandarTemp(){
         double tp = temperaturaPromedio();
-        double acum=0;
-        int cont=0;
+        double acum=0,cont=0;
         for(int i =0;i< Datos.size();i++){
             if(Datos.get(i).getTAVG()==0)
                 cont++;
@@ -120,8 +170,7 @@ public class MarcoDeDatos {
 
     public double desviacionEstandartempMax(){
         double tp = temperaturaMaximaPromedio();
-        double acum=0;
-        int cont=0;
+        double acum=0,cont=0;
         for(int i =0;i< Datos.size();i++){
             if(Datos.get(i).getTMAX()==0)
                 cont++;
@@ -132,8 +181,7 @@ public class MarcoDeDatos {
 
     public double desviacionEstandartempMin(){
         double tp = temperaturaMinimaPromedio();
-        double acum=0;
-        int cont=0;
+        double acum=0,cont=0;
         for(int i =0;i< Datos.size();i++){
             if(Datos.get(i).getTMIN()==0)
                 cont++;
@@ -144,8 +192,7 @@ public class MarcoDeDatos {
 
     public double desviacionEstandarPrecipitacion(){
         double tp = temperaturaPromedio();
-        double acum=0;
-        int cont=0;
+        double acum = 0,cont=0;
         for(int i =0;i< Datos.size();i++){
             if(Datos.get(i).getPRCP()==0)
                 cont++;
@@ -153,4 +200,57 @@ public class MarcoDeDatos {
         }
         return Math.sqrt(acum/(Datos.size()-cont));
     }
+
+    public void menorqueprecip(){
+        Dato temp;
+        for(int i =0;i<Datos.size()-1;i++){
+            for(int j =0;j< Datos.size()-1-i;j++){
+                if (Datos.get(j).getPRCP()<Datos.get(j+1).getPRCP()){
+                    temp=Datos.get(j+1);
+                    Datos.set(j+1,Datos.get(j));
+                    Datos.set(j,temp);
+                }
+            }
+        }
+    }
+
+    public void menorquetemp(){
+        Dato temp;
+        for(int i =0;i<Datos.size()-1;i++){
+            for(int j =0;j< Datos.size()-1-i;j++){
+                if (Datos.get(j).getTAVG()<Datos.get(j+1).getTAVG()){
+                    temp=Datos.get(j+1);
+                    Datos.set(j+1,Datos.get(j));
+                    Datos.set(j,temp);
+                }
+            }
+        }
+    }
+
+    public void menorquetempmax(){
+        Dato temp;
+        for(int i =0;i<Datos.size()-1;i++){
+            for(int j =0;j< Datos.size()-1-i;j++){
+                if (Datos.get(j).getTMAX()<Datos.get(j+1).getTMAX()){
+                    temp=Datos.get(j+1);
+                    Datos.set(j+1,Datos.get(j));
+                    Datos.set(j,temp);
+                }
+            }
+        }
+    }
+
+    public void menorquetempmin(){
+        Dato temp;
+        for(int i =0;i<Datos.size()-1;i++){
+            for(int j =0;j< Datos.size()-1-i;j++){
+                if (Datos.get(j).getTMIN()<Datos.get(j+1).getTMIN()){
+                    temp=Datos.get(j+1);
+                    Datos.set(j+1,Datos.get(j));
+                    Datos.set(j,temp);
+                }
+            }
+        }
+    }
+
 }
